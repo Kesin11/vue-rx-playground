@@ -16,31 +16,12 @@
 </template>
 
 <script>
-import Rx from 'rxjs/Rx'
-import Emitter from 'event-emitter'
-
-const emitter = new Emitter()
-
-const counterSubject = new Rx.Subject()
-counterSubject
-  .map(value => value + 10)
-  .subscribe(value => {
-    console.log(value)
-  })
-
-const likeObservable = Rx.Observable.fromEvent(emitter, 'click_like')
-  .map(payload => {
-    const like = payload.user.like + payload.count
-    return Object.assign({}, payload.user, { like })
-  })
-
-const veryLikeObservable = Rx.Observable.fromEvent(emitter, 'click_like')
-const debouncedVeryLikeObservable = veryLikeObservable
-  .buffer(() => veryLikeObservable.debounce(250)) // TODO: なぜか動かない・・・
-  .map(payload => {
-    const very_like = payload.user.very_like + payload.count
-    return Object.assign({}, payload.user, { very_like })
-  })
+import dispatcher from './dispatcher'
+import {
+  counterSubject,
+  likeObservable,
+  veryLikeObservable,
+} from './observable'
 
 export default {
   name: 'app',
@@ -75,7 +56,7 @@ export default {
       counterSubject.next(1)
     },
     countLike: function(user) {
-      emitter.emit('click_like', { user: user, count: 10})
+      dispatcher.emit('click_like', { user: user, count: 10})
     }
   }
 }
