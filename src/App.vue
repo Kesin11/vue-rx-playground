@@ -17,6 +17,10 @@
 
 <script>
 import Rx from 'rxjs/Rx'
+import Emitter from 'event-emitter'
+
+const emitter = new Emitter()
+
 const counterSubject = new Rx.Subject()
 counterSubject
   .map(value => value + 10)
@@ -24,17 +28,15 @@ counterSubject
     console.log(value)
   })
 
-// 一度subjectをnewしてからじゃないとsubject.mapできないのがイマイチなので使い方間違えてる気がしないでもないのだが・・・
-// Observableは最初に流す値が決まってる類しかなかったので、next()だけで制御するにはこれしか思いつかなかった
-const subject = new Rx.Subject()
-const likeSubject = subject.map(payload => {
-  const like = payload.user.like + payload.count
-  return Object.assign({}, payload.user, { like })
-})
+const likeObservable = Rx.Observable.fromEvent(emitter, 'click_like')
+  .map(payload => {
+    const like = payload.user.like + payload.count
+    return Object.assign({}, payload.user, { like })
+  })
 
-const veryLikeSubject = subject
-  // これが動かないけど、nextがワンショットだからか？
-  .buffer(() => subject.debounce(100))
+const veryLikeObservable = Rx.Observable.fromEvent(emitter, 'click_like')
+const debouncedVeryLikeObservable = veryLikeObservable
+  .buffer(() => veryLikeObservable.debounce(250)) // TODO: なぜか動かない・・・
   .map(payload => {
     const very_like = payload.user.very_like + payload.count
     return Object.assign({}, payload.user, { very_like })
@@ -56,12 +58,13 @@ export default {
     counterSubject.subscribe( value => {
       this.$data.count += value
     })
-    likeSubject.subscribe( user => {
+    likeObservable.subscribe( user => {
       const user_id = user.id
       const i = this.$data.users.findIndex((user) => user.id == user_id)
       Object.assign(this.$data.users[i], user)
     })
-    veryLikeSubject.subscribe( user => {
+    // veryLikeObservable.subscribe( user => {
+    debouncedVeryLikeObservable.subscribe( user => {
       const user_id = user.id
       const i = this.$data.users.findIndex((user) => user.id == user_id)
       Object.assign(this.$data.users[i], user)
@@ -72,7 +75,7 @@ export default {
       counterSubject.next(1)
     },
     countLike: function(user) {
-      likeSubject.next({ user: user, count: 10 })
+      emitter.emit('click_like', { user: user, count: 10})
     }
   }
 }
