@@ -32,6 +32,14 @@ const likeSubject = subject.map(payload => {
   return Object.assign({}, payload.user, { like })
 })
 
+const veryLikeSubject = subject
+  // これが動かないけど、nextがワンショットだからか？
+  .buffer(() => subject.debounce(100))
+  .map(payload => {
+    const very_like = payload.user.very_like + payload.count
+    return Object.assign({}, payload.user, { very_like })
+  })
+
 export default {
   name: 'app',
   data () {
@@ -49,6 +57,11 @@ export default {
       this.$data.count += value
     })
     likeSubject.subscribe( user => {
+      const user_id = user.id
+      const i = this.$data.users.findIndex((user) => user.id == user_id)
+      Object.assign(this.$data.users[i], user)
+    })
+    veryLikeSubject.subscribe( user => {
       const user_id = user.id
       const i = this.$data.users.findIndex((user) => user.id == user_id)
       Object.assign(this.$data.users[i], user)
