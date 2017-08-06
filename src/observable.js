@@ -3,13 +3,6 @@
 import Rx from 'rxjs/Rx'
 import dispatcher from './dispatcher'
 
-export const counterSubject = new Rx.Subject()
-counterSubject
-  .map(value => value + 10)
-  .subscribe(value => {
-    console.log(value)
-  })
-
 export const likeObservable = Rx.Observable.fromEvent(dispatcher, 'click_like')
   .map(payload => {
     const like = payload.user.like + payload.count

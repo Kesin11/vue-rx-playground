@@ -8,17 +8,12 @@
         <button v-on:click="countLike(user)">いいね</button>
       </li>
     </ul>
-
-    <br>
-    <div>count: {{ count }}</div>
-    <button v-on:click="countUp">subscribeCount</button>
   </div>
 </template>
 
 <script>
 import dispatcher from './dispatcher'
 import {
-  counterSubject,
   likeObservable,
   veryLikeObservable,
 } from './observable'
@@ -36,9 +31,6 @@ export default {
     }
   },
   mounted: function() {
-    counterSubject.subscribe( value => {
-      this.$data.count += value
-    })
     likeObservable.subscribe( user => {
       const user_id = user.id
       const i = this.$data.users.findIndex((user) => user.id == user_id)
@@ -51,9 +43,6 @@ export default {
     })
   },
   methods: {
-    countUp: function() {
-      counterSubject.next(1)
-    },
     countLike: function(user) {
       dispatcher.emit('click_like', { user: user, count: 10})
     }
