@@ -25,3 +25,6 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [ ] ユーザー追加を押すとユーザーが追加される
 - [ ] ユーザー追加には時間がかかり、その間追加中の文言がでる
 - [ ] キャンセルを押せばユーザー追加をキャンセルできる
+- [ ] ユーザーの情報が更新されたときサーバーに保存する
+  - [ ] Domain, Infrastructureの分離
+  - [ ] 保存に成功したらメッセージを出す
