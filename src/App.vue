@@ -44,8 +44,7 @@ export default {
       const i = this.$data.users.findIndex((user) => user.id == user_id)
       Object.assign(this.$data.users[i], user)
     })
-    // veryLikeObservable.subscribe( user => {
-    debouncedVeryLikeObservable.subscribe( user => {
+    veryLikeObservable.subscribe( user => {
       const user_id = user.id
       const i = this.$data.users.findIndex((user) => user.id == user_id)
       Object.assign(this.$data.users[i], user)
