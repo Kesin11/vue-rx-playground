@@ -2,6 +2,7 @@
 
 import Rx from 'rxjs/Rx'
 import dispatcher from './dispatcher'
+import fakeServer from './fake_server'
 
 export const likeObservable = Rx.Observable.fromEvent(dispatcher, 'click_like')
   .map(payload => {
@@ -16,4 +17,9 @@ export const veryLikeObservable = Rx.Observable.fromEvent(dispatcher, 'click_lik
   .map(payload => {
     const very_like = payload.user.very_like + payload.count
     return Object.assign({}, payload.user, { very_like })
+  })
+
+export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
+  .flatMap(() => {
+    return Rx.Observable.fromPromise(fakeServer.addUser())
   })
