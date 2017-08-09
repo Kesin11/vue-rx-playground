@@ -10,6 +10,8 @@
     </ul>
     <div>{{message}}</div>
     <button v-on:click="addUser()">Add user</button>
+    <button v-on:click="cancelAddUser()">Cancel add user</button>
+    <div>stoppingAddUser: {{stoppingAddUser}}</div>
   </div>
 </template>
 
@@ -29,6 +31,7 @@ export default {
       users: [],
       count: 0,
       message: '',
+      stoppingAddUser: false,
     }
   },
   created: function() {
@@ -46,7 +49,9 @@ export default {
       const i = this.$data.users.findIndex((user) => user.id == user_id)
       Object.assign(this.$data.users[i], user)
     })
-    addUserObservable.subscribe( user => {
+    addUserObservable
+    .filter( () => ! this.$data.stoppingAddUser )
+    .subscribe( user => {
       // 謎だがthis.$data.usersに直接pushできなかったので別Objectを作ってから再代入
       const users = Object.assign([], this.$data.users)
       users.push(user)
@@ -60,7 +65,16 @@ export default {
     },
     addUser: function() {
       dispatcher.emit('add_user')
+      this.$data.stoppingAddUser = false
       this.$data.message = 'loading...'
+    },
+    cancelAddUser: function() {
+      dispatcher.emit('cancel_add_user')
+      this.$data.stoppingAddUser = true
+      this.$data.message = 'cancel!'
+    },
+    toggleStoppingAddUser: function() {
+      this.$data.stoppingAddUser = !this.$data.stoppingAddUser
     }
   }
 }
