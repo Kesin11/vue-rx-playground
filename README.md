@@ -30,6 +30,9 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [ ] ユーザーの情報が更新されたときサーバーに保存する
   - [ ] Domain, Infrastructureの分離
   - [ ] 保存に成功したらメッセージを出す
+  - [ ] ローカル状態のリセットができる
+  - [ ] ローカル状態をサーバーに保存する
+  - [ ] いいねのボタンを押し終わって一定時間経つと自動保存
 
 # 設計
 MVVM + Layerd Architecture
