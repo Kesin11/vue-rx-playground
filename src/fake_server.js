@@ -7,7 +7,7 @@ class FakeServer {
   }
   // 初期データ用
   getUsersSync () {
-    return Object.assign({}, this.users)
+    return Object.assign([], this.users)
   }
   getUsers () {
     return Rx.Observable.of(this.users)

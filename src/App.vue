@@ -23,6 +23,7 @@ import {
   veryLikeObservable,
   addUserObservable,
 } from './observable'
+import usersStore from './Store/UsersStore'
 
 export default {
   name: 'app',
@@ -36,9 +37,14 @@ export default {
   },
   created: function() {
     // 初期データをロード（debugなので同期的に取る）
-    this.$data.users = fakeServer.getUsersSync()
+    const users = fakeServer.getUsersSync()
+    usersStore.reset(users)
   },
   mounted: function() {
+    // Storeを監視してViewModelを更新
+    dispatcher.on('UPDATE_USERS_STORE', () => this.$data.users = usersStore.getState() )
+    this.$data.users = usersStore.getState()
+
     likeObservable.subscribe( user => {
       const user_id = user.id
       const i = this.$data.users.findIndex((user) => user.id == user_id)
