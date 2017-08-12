@@ -4,14 +4,12 @@
       <li v-for="user in users">
         <div>{{ user.name }}</div>
         <div>Like: {{ user.like }}</div>
-        <div>Very like: {{ user.very_like }}</div>
+        <div>Very like: {{ user.veryLike }}</div>
         <button v-on:click="countLike(user)">いいね</button>
       </li>
     </ul>
     <div>{{message}}</div>
     <button v-on:click="addUser()">Add user</button>
-    <button v-on:click="cancelAddUser()">Cancel add user</button>
-    <div>stoppingAddUser: {{stoppingAddUser}}</div>
   </div>
 </template>
 
@@ -19,8 +17,6 @@
 import dispatcher from './dispatcher'
 import fakeServer from './fake_server'
 import {
-  likeObservable,
-  veryLikeObservable,
   addUserObservable,
 } from './observable'
 import usersStore from './Store/UsersStore'
@@ -32,7 +28,6 @@ export default {
       users: [],
       count: 0,
       message: '',
-      stoppingAddUser: false,
     }
   },
   created: function() {
@@ -41,29 +36,16 @@ export default {
     usersStore.reset(users)
   },
   mounted: function() {
-    // Storeを監視してViewModelを更新
-    dispatcher.on('UPDATE_USERS_STORE', () => this.$data.users = usersStore.getState() )
     this.$data.users = usersStore.getState()
+    // Storeを監視してViewModelを更新
+    dispatcher.on('UPDATE_USERS_STORE', () => {
+      this.$data.users = usersStore.getState()
+    })
 
-    likeObservable.subscribe( user => {
-      const user_id = user.id
-      const i = this.$data.users.findIndex((user) => user.id == user_id)
-      Object.assign(this.$data.users[i], user)
-    })
-    veryLikeObservable.subscribe( user => {
-      const user_id = user.id
-      const i = this.$data.users.findIndex((user) => user.id == user_id)
-      Object.assign(this.$data.users[i], user)
-    })
     addUserObservable
-    .filter( () => ! this.$data.stoppingAddUser )
-    .subscribe( user => {
-      // 謎だがthis.$data.usersに直接pushできなかったので別Objectを作ってから再代入
-      const users = Object.assign([], this.$data.users)
-      users.push(user)
-      this.$data.users = users
-      this.$data.message = 'finish!'
-    })
+      .subscribe( () => {
+        this.$data.message = 'finish!'
+      })
   },
   methods: {
     countLike: function(user) {
@@ -71,17 +53,8 @@ export default {
     },
     addUser: function() {
       dispatcher.emit('add_user')
-      this.$data.stoppingAddUser = false
       this.$data.message = 'loading...'
     },
-    cancelAddUser: function() {
-      dispatcher.emit('cancel_add_user')
-      this.$data.stoppingAddUser = true
-      this.$data.message = 'cancel!'
-    },
-    toggleStoppingAddUser: function() {
-      this.$data.stoppingAddUser = !this.$data.stoppingAddUser
-    }
   }
 }
 </script>

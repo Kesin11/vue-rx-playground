@@ -1,5 +1,6 @@
 // UserModelを集約するStore
 import dispatcher from '../dispatcher'
+import UserModel from '../Domain/UserModel'
 
 class UsersStore {
   constructor(users) {
@@ -7,16 +8,32 @@ class UsersStore {
     dispatcher.emit('UPDATE_USERS_STORE')
   }
   getState () {
-    // return this.users.map((user) => user.toJSON())
-    return this.users.map((user) => user)
+    return this.users.map((user) => user.toState())
   }
-  reset (users) {
-    this.users = users
+  _emitUpdate() {
     dispatcher.emit('UPDATE_USERS_STORE')
   }
-  add (user) {
+  reset (userStates) {
+    this.users = userStates.map((userState) => new UserModel(userState))
+    this._emitUpdate()
+  }
+  addUser (userState) {
+    const user = new UserModel(userState)
     this.users.push(user)
-    dispatcher.emit('UPDATE_USERS_STORE')
+    this._emitUpdate()
+  }
+  findUser(user_id) {
+    return this.users.find( (user) => user.id === user_id )
+  }
+  addLike(user_id, count) {
+    const user = this.findUser(user_id)
+    user.addLike(count)
+    this._emitUpdate()
+  }
+  addVeryLike(user_id, count) {
+    const user = this.findUser(user_id)
+    user.addVeryLike(count)
+    this._emitUpdate()
   }
 }
 
