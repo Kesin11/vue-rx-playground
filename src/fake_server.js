@@ -1,9 +1,16 @@
 import Rx from 'rxjs/Rx'
+import dispatcher from './dispatcher'
 
 class FakeServer {
   constructor(initUsers) {
     this.users = initUsers
     this.seq_id = initUsers.length + 1
+  }
+  getJSON() {
+    return JSON.stringify(this)
+  }
+  _emitUpdate() {
+    dispatcher.emit('UPDATE_SERVER_STATE')
   }
   // 初期データ用
   getUsersSync () {
@@ -19,6 +26,7 @@ class FakeServer {
     const user = { id: this.seq_id, name: '', like: 0, very_like: 0 }
     this.users.push(user)
     this.seq_id += 1
+    this._emitUpdate()
 
     return Rx.Observable.of(user)
       .delay(800)

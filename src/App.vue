@@ -10,10 +10,12 @@
     </ul>
     <div>{{message}}</div>
     <button v-on:click="addUser()">Add user</button>
+    <ServerState></ServerState>
   </div>
 </template>
 
 <script>
+import ServerState from './ServerState.vue'
 import dispatcher from './dispatcher'
 import fakeServer from './fake_server'
 import {
@@ -23,6 +25,7 @@ import usersStore from './Store/UsersStore'
 
 export default {
   name: 'app',
+  components: { ServerState },
   data () {
     return {
       users: [],
