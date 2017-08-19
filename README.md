@@ -25,7 +25,6 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [x] ユーザー追加を押すとユーザーが追加される
 - [x] ユーザー追加には時間がかかり、その間追加中の文言がでる
 - [x] Storeへの分離
-  - [ ] Immutable.js検討してみる？
 - [ ] ユーザーの情報が更新されたときサーバーに保存する
   - [ ] Domain, Infrastructureの分離
   - [ ] 保存に成功したらメッセージを出す
@@ -60,7 +59,12 @@ StoreはDomainのオブジェクトを持ち、Domainオブジェクトが更新
 複数のStoreの協調動作が唯一許されるクラスであり、
 外部APIとの通信もInfra層を通じてUsecaseのみが行うことができる。
 
-複雑化しやすいAjaxが行われる箇所を１つにまとめることで見通しを良くする
+本来ならばドメインモデルがInfra層を通じて外部APIとの通信をするべきだが、WebアプリにおいてはAjaxの成功・失敗に応じてViewModeとやりとりする必要が多いことと、
+複雑化しやすいAjaxが行われる箇所をUsecaseに限定する１つにまとめることで見通しを良くする
+
+今回はRx.jsの練習も兼ねているのでUsecaseはobservableで構成する
+
+- UserObservable
 
 ### Store
 Domainの集約と、Domainが変更されたことをViewに通知する。
@@ -70,13 +74,16 @@ ViewModelのdataの1つのキーと1対1で対応するStoreができるはず
 
 ## Domain
 いわゆるドメインモデル。あるオブジェクトに関する振る舞いや状態の更新を担当する。
-必要ならInfra層のオブジェクトも持つ。
+
+CleanArchitectureの思想に従い、DomainがInfrastructureに依存しないようにDependency Injectionを行う。
+実装としてはドメインモデルにInfrastructureのオブジェクトを渡すことで実現する。
+
+ただし、外部APIとの通信に関してはUsecaseで述べたようにWebアプリケーションではUsecaseから直接行った方が楽なのでDomainは担当しない
 
 - Model
 
 ## Infrastructure
-ブラウザなどの環境依存だったり、外部に依存するもの。
-ModelがInfraに依存しないように、InfraがModelを持つという依存関係にする。
+ブラウザなどの環境依存だったり、外部APIなどの外部に依存するもの。
 
 - DBとの通信
 - 外部APIとの通信
@@ -86,7 +93,7 @@ ModelがInfraに依存しないように、InfraがModelを持つという依存
 Component/
   App.vue
 Usecase/
-  User.js
+  UserObservable.js
 Store/
   Users.js
   Notifications.js
