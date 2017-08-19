@@ -24,8 +24,7 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [x] ダブルクリックすると超いいねがカウントアップされる
 - [x] ユーザー追加を押すとユーザーが追加される
 - [x] ユーザー追加には時間がかかり、その間追加中の文言がでる
-- [x] キャンセルを押せばユーザー追加をキャンセルできる
-- [ ] Storeへの分離
+- [x] Storeへの分離
   - [ ] Immutable.js検討してみる？
 - [ ] ユーザーの情報が更新されたときサーバーに保存する
   - [ ] Domain, Infrastructureの分離
