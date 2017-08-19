@@ -1,9 +1,10 @@
-// FluxでいうところのAction
+// Userに関するusecase
+// FluxではActionに相当する
 
 import Rx from 'rxjs/Rx'
-import dispatcher from './dispatcher'
-import fakeServer from './fake_server'
-import usersStore from './Store/UsersStore'
+import dispatcher from '../dispatcher'
+import fakeServer from '../fake_server'
+import usersStore from '../Store/UsersStore'
 
 export const addLikeObservable = Rx.Observable.fromEvent(dispatcher, 'click_like')
 

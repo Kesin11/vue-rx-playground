@@ -20,7 +20,7 @@ import dispatcher from './dispatcher'
 import fakeServer from './fake_server'
 import {
   addUserObservable,
-} from './observable'
+} from './Usecase/UserObservable'
 import usersStore from './Store/UsersStore'
 
 export default {
