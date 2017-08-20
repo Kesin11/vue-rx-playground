@@ -21,6 +21,15 @@ addVeryLikeObservable.subscribe(payload => {
     usersStore.addVeryLike(payload.user.id, payload.count)
   })
 
+export const getUsersObservable = Rx.Observable.fromEvent(dispatcher, 'get_users')
+  .flatMap(() => {
+    return Rx.Observable.fromPromise(fakeServer.getUsers())
+  })
+
+getUsersObservable.subscribe(users => {
+  usersStore.reset(users)
+})
+
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .flatMap(() => {
     return Rx.Observable.fromPromise(fakeServer.addUser())

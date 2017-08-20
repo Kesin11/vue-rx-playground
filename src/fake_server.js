@@ -12,14 +12,10 @@ class FakeServer {
   _emitUpdate() {
     dispatcher.emit('UPDATE_SERVER_STATE')
   }
-  // 初期データ用
-  getUsersSync () {
-    return Object.assign([], this.users)
-  }
   getUsers () {
     return Rx.Observable.of(this.users)
       .delay(300)
-      .map(users => Object.assign({}, users))
+      .map(users => Object.assign([], users))
       .toPromise()
   }
   addUser() {

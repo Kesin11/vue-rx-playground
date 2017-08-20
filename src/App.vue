@@ -17,7 +17,6 @@
 <script>
 import ServerState from './ServerState.vue'
 import dispatcher from './dispatcher'
-import fakeServer from './fake_server'
 import {
   addUserObservable,
 } from './Usecase/UserObservable'
@@ -34,12 +33,10 @@ export default {
     }
   },
   created: function() {
-    // 初期データをロード（debugなので同期的に取る）
-    const users = fakeServer.getUsersSync()
-    usersStore.reset(users)
+    // 初期データをロード
+    this.getUsers()
   },
   mounted: function() {
-    this.$data.users = usersStore.getState()
     // Storeを監視してViewModelを更新
     dispatcher.on('UPDATE_USERS_STORE', () => {
       this.$data.users = usersStore.getState()
@@ -53,6 +50,9 @@ export default {
   methods: {
     countLike: function(user) {
       dispatcher.emit('click_like', { user: user, count: 10})
+    },
+    getUsers: function() {
+      dispatcher.emit('get_users')
     },
     addUser: function() {
       dispatcher.emit('add_user')
