@@ -25,12 +25,13 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [x] ユーザー追加を押すとユーザーが追加される
 - [x] ユーザー追加には時間がかかり、その間追加中の文言がでる
 - [x] Storeへの分離
-- [ ] ユーザーの情報が更新されたときサーバーに保存する
-  - [ ] Domain, Infrastructureの分離
-  - [ ] 保存に成功したらメッセージを出す
+- [x] Domainの分離
+- [ ] サーバーとの疑似通信
+  - [ ] Infrastructureの分離
   - [ ] ローカル状態のリセットができる
   - [ ] ローカル状態をサーバーに保存する
   - [ ] いいねのボタンを押し終わって一定時間経つと自動保存
+  - [ ] 保存に成功したらメッセージを出す
 
 # 設計
 MVVM + Layerd Architecture
