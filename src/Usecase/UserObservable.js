@@ -3,8 +3,10 @@
 
 import Rx from 'rxjs/Rx'
 import dispatcher from '../dispatcher'
-import fakeServer from '../fake_server'
+import ApiClient from '../Infrastructure/ApiClient'
 import usersStore from '../Store/UsersStore'
+
+const client = new ApiClient()
 
 export const addLikeObservable = Rx.Observable.fromEvent(dispatcher, 'click_like')
 
@@ -23,7 +25,7 @@ addVeryLikeObservable.subscribe(payload => {
 
 export const getUsersObservable = Rx.Observable.fromEvent(dispatcher, 'get_users')
   .flatMap(() => {
-    return Rx.Observable.fromPromise(fakeServer.getUsers())
+    return Rx.Observable.fromPromise(client.getUsers())
   })
 
 getUsersObservable.subscribe(users => {
@@ -32,7 +34,7 @@ getUsersObservable.subscribe(users => {
 
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .flatMap(() => {
-    return Rx.Observable.fromPromise(fakeServer.addUser())
+    return Rx.Observable.fromPromise(client.addUser())
   })
 
 addUserObservable.subscribe((userState) => {
