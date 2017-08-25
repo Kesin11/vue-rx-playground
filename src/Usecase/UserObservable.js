@@ -45,3 +45,10 @@ export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
 addUserObservable.subscribe((userState) => {
     usersStore.addUser(userState)
   })
+
+export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_users')
+  .flatMap(() => {
+    const usersState = usersStore.getState()
+    return Rx.Observable.fromPromise(client.saveUsers(usersState))
+  })
+  .share()

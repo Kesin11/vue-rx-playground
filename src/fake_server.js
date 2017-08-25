@@ -28,6 +28,14 @@ class FakeServer {
       .delay(800)
       .toPromise()
   }
+  saveUsers (usersState) {
+    Object.assign(this.users, usersState)
+    this._emitUpdate()
+
+    return Rx.Observable.of(usersState)
+      .delay(800)
+      .toPromise()
+  }
 }
 
 const initUsers = [

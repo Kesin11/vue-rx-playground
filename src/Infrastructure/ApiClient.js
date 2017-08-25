@@ -11,4 +11,7 @@ export default class ApiClient {
   addUser() {
     return fakeServer.addUser()
   }
+  saveUsers(usersState) {
+    return fakeServer.saveUsers(usersState)
+  }
 }

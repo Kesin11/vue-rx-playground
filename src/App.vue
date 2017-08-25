@@ -11,6 +11,7 @@
     <div>{{message}}</div>
     <button v-on:click="addUser()">Add user</button>
     <button v-on:click="getUsers()">Reset state</button>
+    <button v-on:click="saveUsers()">Save state</button>
     <ServerState></ServerState>
   </div>
 </template>
@@ -20,6 +21,7 @@ import ServerState from './ServerState.vue'
 import dispatcher from './dispatcher'
 import {
   addUserObservable,
+  saveUsersObservable,
 } from './Usecase/UserObservable'
 import usersStore from './Store/UsersStore'
 
@@ -45,7 +47,11 @@ export default {
 
     addUserObservable
       .subscribe( () => {
-        this.$data.message = 'finish!'
+        this.$data.message = 'add user finish!'
+      })
+    saveUsersObservable
+      .subscribe( () => {
+        this.$data.message = 'save user finish!'
       })
   },
   methods: {
@@ -58,6 +64,10 @@ export default {
     addUser: function() {
       dispatcher.emit('add_user')
       this.$data.message = 'loading...'
+    },
+    saveUsers: function() {
+      dispatcher.emit('save_users')
+      this.$data.message = 'save...'
     },
   }
 }
