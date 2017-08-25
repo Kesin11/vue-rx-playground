@@ -28,9 +28,10 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [x] Domainの分離
 - [ ] サーバーとの疑似通信
   - [x] Infrastructureの分離
-  - [ ] ローカル状態のリセットができる
+  - [x] ローカル状態のリセットができる
   - [ ] ローカル状態をサーバーに保存する
   - [ ] いいねのボタンを押し終わって一定時間経つと自動保存
+  - [ ] Store/Notificationの作成
   - [ ] 保存に成功したらメッセージを出す
 
 # 設計

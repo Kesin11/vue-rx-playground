@@ -10,6 +10,7 @@
     </ul>
     <div>{{message}}</div>
     <button v-on:click="addUser()">Add user</button>
+    <button v-on:click="getUsers()">Reset state</button>
     <ServerState></ServerState>
   </div>
 </template>
