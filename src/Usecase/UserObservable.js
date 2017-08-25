@@ -32,10 +32,15 @@ getUsersObservable.subscribe(users => {
   usersStore.reset(users)
 })
 
+// Observableはsubscribeされた数だけストリームを複製するような仕組みになっている(cold)
+// share()することでsubscribeに関係なくストリームが1つだけ生成され、それぞれのsubscribeはその下にぶら下がるようになる
+// https://wilfrem.github.io/learn_rx/cold_hot.html
+// addUserはストリームが複数生成されると複数回実行されてしまうことになるので.share()しておく
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .flatMap(() => {
     return Rx.Observable.fromPromise(client.addUser())
   })
+  .share()
 
 addUserObservable.subscribe((userState) => {
     usersStore.addUser(userState)
