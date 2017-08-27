@@ -31,8 +31,9 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
   - [x] ローカル状態のリセットができる
   - [x] ローカル状態をサーバーに保存する
   - [x] いいねのボタンを押し終わって一定時間経つと自動保存
-  - [ ] Store/Notificationの作成
-  - [ ] 保存に成功したらメッセージを出す
+  - [x] Store/Notificationの作成
+  - [x] 保存に成功したらメッセージを出す
+  - [ ] 失敗したときのエラーメッセージ
 
 # 設計
 MVVM + Layerd Architecture

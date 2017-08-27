@@ -5,6 +5,7 @@ import Rx from 'rxjs/Rx'
 import dispatcher from '../dispatcher'
 import ApiClient from '../Infrastructure/ApiClient'
 import usersStore from '../Store/UsersStore'
+import notificationStore from '../Store/NotificationStore'
 
 const client = new ApiClient()
 
@@ -47,6 +48,9 @@ getUsersObservable.subscribe(users => {
 })
 
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
+  .do(() => {
+    notificationStore.setInfo('loading...')
+  })
   .flatMap(() => {
     return Rx.Observable.fromPromise(client.addUser())
   })
@@ -54,11 +58,20 @@ export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
 
 addUserObservable.subscribe((userState) => {
     usersStore.addUser(userState)
+    notificationStore.setSuccess('add user finish!')
   })
 
 export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_users')
+  .do(() => {
+    notificationStore.setInfo('loading...')
+  })
   .flatMap(() => {
     const usersState = usersStore.getState()
     return Rx.Observable.fromPromise(client.saveUsers(usersState))
   })
   .share()
+
+saveUsersObservable.subscribe(() => {
+  notificationStore.setSuccess('save users finish!')
+
+})

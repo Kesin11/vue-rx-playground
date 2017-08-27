@@ -8,7 +8,7 @@
         <button v-on:click="countLike(user)">いいね</button>
       </li>
     </ul>
-    <div>{{message}}</div>
+    <Notification></Notification>
     <button v-on:click="addUser()">Add user</button>
     <button v-on:click="getUsers()">Reset state</button>
     <button v-on:click="saveUsers()">Save state</button>
@@ -18,21 +18,17 @@
 
 <script>
 import ServerState from './ServerState.vue'
-import dispatcher from './dispatcher'
-import {
-  addUserObservable,
-  saveUsersObservable,
-} from './Usecase/UserObservable'
-import usersStore from './Store/UsersStore'
+import Notification from './Notification.vue'
+import dispatcher from '../dispatcher'
+import usersStore from '../Store/UsersStore'
 
 export default {
   name: 'app',
-  components: { ServerState },
+  components: { ServerState, Notification },
   data () {
     return {
       users: [],
       count: 0,
-      message: '',
     }
   },
   created: function() {
@@ -44,15 +40,6 @@ export default {
     dispatcher.on('UPDATE_USERS_STORE', () => {
       this.$data.users = usersStore.getState()
     })
-
-    addUserObservable
-      .subscribe( () => {
-        this.$data.message = 'add user finish!'
-      })
-    saveUsersObservable
-      .subscribe( () => {
-        this.$data.message = 'save user finish!'
-      })
   },
   methods: {
     countLike: function(user) {
@@ -63,11 +50,9 @@ export default {
     },
     addUser: function() {
       dispatcher.emit('add_user')
-      this.$data.message = 'loading...'
     },
     saveUsers: function() {
       dispatcher.emit('save_users')
-      this.$data.message = 'save...'
     },
   }
 }
