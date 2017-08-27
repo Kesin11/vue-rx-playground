@@ -33,7 +33,8 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
   - [x] いいねのボタンを押し終わって一定時間経つと自動保存
   - [x] Store/Notificationの作成
   - [x] 保存に成功したらメッセージを出す
-  - [ ] 失敗したときのエラーメッセージ
+  - [x] 失敗したときのエラーメッセージ
+- [ ] Observableのテスト
 
 # 設計
 MVVM + Layerd Architecture
@@ -66,6 +67,11 @@ StoreはDomainのオブジェクトを持ち、Domainオブジェクトが更新
 複雑化しやすいAjaxが行われる箇所をUsecaseに限定する１つにまとめることで見通しを良くする
 
 今回はRx.jsの練習も兼ねているのでUsecaseはobservableで構成する
+
+TODO: LayerdArchitectureはモデルを3層に分けるものだったので、その趣旨から言えばStoreではなくて最もViewModelに近いUsecaseのみがStoreに更新があったことを伝えるべきでは？
+Modelを操作することができるのはUsecaseだけなので、どのModelを更新したか知ってるはずだし。
+と思ったけど、自分より下の層のどのメソッドを呼んだらそれが更新されたかどうか知ってるというのは、下の層の実装を知ってることになるのでダメか？
+ちゃんと考えがまとまっていないのでまたあとで考える
 
 - UserObservable
 
