@@ -1,6 +1,7 @@
 <template>
   <div id="ServerState">
-    <button v-on:click="fetchState()">fetchState</button>
+    <button v-on:click="toggleServerStatus()">toggle server state</button>
+    <div>status: {{status}}</div>
     <div>{{stateJson}}</div>
   </div>
 </template>
@@ -14,18 +15,26 @@ export default {
   name: 'ServerState',
   data () {
     return {
-      stateJson: {}
+      state: {}
+    }
+  },
+  computed: {
+    stateJson: function() {
+      return JSON.stringify(this.$data.state)
+    },
+    status: function() {
+      return (this.$data.state.active) ? 'active' : 'deactive'
     }
   },
   mounted: function() {
     dispatcher.on('UPDATE_SERVER_STATE', () => {
-      this.$data.stateJson = fakeServer.getJSON()
+      this.$data.state = Object.assign({}, fakeServer)
     })
-    this.$data.stateJson = fakeServer.getJSON()
+    this.$data.state = Object.assign({}, fakeServer)
   },
   methods: {
-    fetchState: function() {
-      this.$data.stateJson = fakeServer.getJSON()
+    toggleServerStatus: function() {
+      fakeServer.toggleStatus()
     }
   }
 }

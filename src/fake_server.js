@@ -5,11 +5,13 @@ class FakeServer {
   constructor(initUsers) {
     this.users = initUsers
     this.seq_id = initUsers.length + 1
-  }
-  getJSON() {
-    return JSON.stringify(this)
+    this.active = true
   }
   _emitUpdate() {
+    dispatcher.emit('UPDATE_SERVER_STATE')
+  }
+  toggleStatus() {
+    this.active = (this.active) ? false : true
     dispatcher.emit('UPDATE_SERVER_STATE')
   }
   getUsers () {
