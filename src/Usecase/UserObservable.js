@@ -42,18 +42,26 @@ saveLikeObservable.subscribe(() => {
 // サーバーからユーザー情報を取得
 export const getUsersObservable = Rx.Observable.fromEvent(dispatcher, 'get_users')
   // mergeMapは複数のobservableをマージしたものを返す
-  // fromPromise()でObservableを返しているので、元々のfromEvent()のものと合流させるためにmergeMap()を使う
+  // mergeMap()はObservable以外にもPromise()などを引数に取れる
+  // Observableにエラーが流れると次のイベントが来ても処理が行われなくなるため、
+  // Promiseの段階でcatchによるエラーハンドリングをすることで本流のObservableがエラーになることを防ぐ
   .mergeMap(() => {
-    return Rx.Observable.fromPromise(client.getUsers())
+    return client.getUsers()
+      .then((users) => users)
+      .catch((err) => err)
   })
+  .share()
 
-getUsersObservable.subscribe(users => {
-  usersStore.reset(users)
+getUsersObservable.subscribe((payload) => {
+  if (payload instanceof Error) {
+    notificationStore.setError(payload.message)
+  }
+  else {
+    usersStore.reset(payload)
+  }
 })
 
 // ユーザーの追加リクエストを送信
-// mergeMap()はObservable以外にもPromise()などを引数に取れる
-// なのでfromPromise()は不要で、Promiseの段階でcatchによるエラーハンドリングをしてしまえば本流のObservableがエラーになることはないので、ここまで省略することが可能
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .do(() => {
     notificationStore.setInfo('loading...')
@@ -68,33 +76,22 @@ export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
 addUserObservable.subscribe((payload) => {
   if (payload instanceof Error) {
     notificationStore.setError(payload.message)
-  } else {
+  }
+  else {
     usersStore.addUser(payload)
     notificationStore.setSuccess('add user finish!')
   }
-  })
+})
 
 // ローカルの状態をサーバーに同期
-// エラーハンドリングのために複雑になっている
-// 普通にObservableがエラーになるとそのObservableはクローズしてしまい、新しい入力が来ても反応しなくなってしまう
-// それを回避するため、switchMap()の中でエラーになってもよい別のObservableを作り、
-// 別のObservableでcatch()してエラーハンドリングすることで本流にエラーを流さない
-// 本流はエラーにならないのでsubscribe()では普通のエラーハンドリングができないため独自にエラー判定が必要になる
-// switchMapの挙動は以下が分かりやすかった
-// http://qiita.com/ovrmrw/items/b45d7bf29c8d29415bd7
 export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_users')
   .do(() => {
     notificationStore.setInfo('loading...')
   })
-  .switchMap((event) => {
-    return Rx.Observable.of(event)
-      .mergeMap(() => {
-        const usersState = usersStore.getState()
-        return Rx.Observable.fromPromise(client.saveUsers(usersState))
-      })
-      .catch((err) => {
-        return Rx.Observable.of(err)
-      })
+  .mergeMap(() => {
+    const usersState = usersStore.getState()
+    return client.saveUsers(usersState)
+      .catch((err) => err)
   })
   .share()
 
