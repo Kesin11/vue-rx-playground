@@ -41,9 +41,9 @@ saveLikeObservable.subscribe(() => {
 
 // サーバーからユーザー情報を取得
 export const getUsersObservable = Rx.Observable.fromEvent(dispatcher, 'get_users')
-  // flatMapは複数のobservableをマージしたものを返す
-  // fromPromise()でObservableを返しているので、元々のfromEvent()のものと合流させるためにflatMap()を使う
-  .flatMap(() => {
+  // mergeMapは複数のobservableをマージしたものを返す
+  // fromPromise()でObservableを返しているので、元々のfromEvent()のものと合流させるためにmergeMap()を使う
+  .mergeMap(() => {
     return Rx.Observable.fromPromise(client.getUsers())
   })
 
@@ -52,13 +52,13 @@ getUsersObservable.subscribe(users => {
 })
 
 // ユーザーの追加リクエストを送信
-// flatMap()はObservable以外にもPromise()などを引数に取れる
+// mergeMap()はObservable以外にもPromise()などを引数に取れる
 // なのでfromPromise()は不要で、Promiseの段階でcatchによるエラーハンドリングをしてしまえば本流のObservableがエラーになることはないので、ここまで省略することが可能
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .do(() => {
     notificationStore.setInfo('loading...')
   })
-  .flatMap(() => {
+  .mergeMap(() => {
     return client.addUser()
       .then((newUser) => newUser)
       .catch((err) => err )
@@ -88,7 +88,7 @@ export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_use
   })
   .switchMap((event) => {
     return Rx.Observable.of(event)
-      .flatMap(() => {
+      .mergeMap(() => {
         const usersState = usersStore.getState()
         return Rx.Observable.fromPromise(client.saveUsers(usersState))
       })
