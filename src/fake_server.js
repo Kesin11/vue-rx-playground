@@ -53,9 +53,9 @@ class FakeServer {
 }
 
 const initUsers = [
-  { id: 1, name: 'Ken',   like: 0, very_like: 0 },
-  { id: 2, name: 'Alice', like: 0, very_like: 0 },
-  { id: 3, name: 'Van',   like: 0, very_like: 0 },
+  { id: 1, name: 'Ken',   like: 0, veryLike: 0 },
+  { id: 2, name: 'Alice', like: 0, veryLike: 0 },
+  { id: 3, name: 'Van',   like: 0, veryLike: 0 },
 ]
 
 export default new FakeServer(initUsers)

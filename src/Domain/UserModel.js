@@ -2,8 +2,8 @@ class UserModel {
   constructor(user) {
     this.id = user.id
     this.name = user.name
-    this.like = 0
-    this.veryLike = 0
+    this.like = user.like
+    this.veryLike = user.veryLike
   }
   toState() {
     let object = {}
