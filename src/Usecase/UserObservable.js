@@ -30,6 +30,7 @@ addVeryLikeObservable.subscribe(payload => {
     usersStore.addVeryLike(payload.user.id, payload.count)
   })
 
+// like, veryLikeの後に自動でサーバーに同期
 export const saveLikeObservable = Rx.Observable.merge(addLikeObservable, addVeryLikeObservable)
   .debounceTime(1000)
   .share()
@@ -38,6 +39,7 @@ saveLikeObservable.subscribe(() => {
   dispatcher.emit('save_users')
 })
 
+// サーバーからユーザー情報を取得
 export const getUsersObservable = Rx.Observable.fromEvent(dispatcher, 'get_users')
   .flatMap(() => {
     return Rx.Observable.fromPromise(client.getUsers())
@@ -47,6 +49,7 @@ getUsersObservable.subscribe(users => {
   usersStore.reset(users)
 })
 
+// ユーザーの追加リクエストを送信
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .do(() => {
     notificationStore.setInfo('loading...')
@@ -61,6 +64,7 @@ addUserObservable.subscribe((userState) => {
     notificationStore.setSuccess('add user finish!')
   })
 
+  // ローカルの状態をサーバーに同期
 export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_users')
   .do(() => {
     notificationStore.setInfo('loading...')
@@ -73,5 +77,4 @@ export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_use
 
 saveUsersObservable.subscribe(() => {
   notificationStore.setSuccess('save users finish!')
-
 })
