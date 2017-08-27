@@ -41,6 +41,8 @@ saveLikeObservable.subscribe(() => {
 
 // サーバーからユーザー情報を取得
 export const getUsersObservable = Rx.Observable.fromEvent(dispatcher, 'get_users')
+  // flatMapは複数のobservableをマージしたものを返す
+  // fromPromise()でObservableを返しているので、元々のfromEvent()のものと合流させるためにflatMap()を使う
   .flatMap(() => {
     return Rx.Observable.fromPromise(client.getUsers())
   })
@@ -64,17 +66,34 @@ addUserObservable.subscribe((userState) => {
     notificationStore.setSuccess('add user finish!')
   })
 
-  // ローカルの状態をサーバーに同期
+// ローカルの状態をサーバーに同期
+// エラーハンドリングのために複雑になっている
+// 普通にObservableがエラーになるとそのObservableはクローズしてしまい、新しい入力が来ても反応しなくなってしまう
+// それを回避するため、switchMap()の中でエラーになってもよい別のObservableを作り、
+// 別のObservableでcatch()してエラーハンドリングすることで本流にエラーを流さない
+// 本流はエラーにならないのでsubscribe()では普通のエラーハンドリングができないため独自にエラー判定が必要になる
+// switchMapの挙動は以下が分かりやすかった
+// http://qiita.com/ovrmrw/items/b45d7bf29c8d29415bd7
 export const saveUsersObservable = Rx.Observable.fromEvent(dispatcher, 'save_users')
   .do(() => {
     notificationStore.setInfo('loading...')
   })
-  .flatMap(() => {
-    const usersState = usersStore.getState()
-    return Rx.Observable.fromPromise(client.saveUsers(usersState))
+  .switchMap((event) => {
+    return Rx.Observable.of(event)
+      .flatMap(() => {
+        const usersState = usersStore.getState()
+        return Rx.Observable.fromPromise(client.saveUsers(usersState))
+      })
+      .catch((err) => {
+        return Rx.Observable.of(err)
+      })
   })
   .share()
 
-saveUsersObservable.subscribe(() => {
-  notificationStore.setSuccess('save users finish!')
+saveUsersObservable.subscribe((payload) => {
+  if (payload instanceof Error) {
+    notificationStore.setError(payload.message)
+  } else {
+    notificationStore.setSuccess('save users finished!')
+  }
 })

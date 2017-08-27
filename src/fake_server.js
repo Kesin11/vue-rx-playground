@@ -14,13 +14,23 @@ class FakeServer {
     this.active = (this.active) ? false : true
     dispatcher.emit('UPDATE_SERVER_STATE')
   }
+  deactiveError() {
+    return Rx.Observable
+      .throw(new Error('Server is deactive'))
+      .toPromise()
+  }
+
   getUsers () {
+    if (!this.active) return this.deactiveError()
+
     return Rx.Observable.of(this.users)
       .delay(300)
       .map(users => Object.assign([], users))
       .toPromise()
   }
   addUser() {
+    if (!this.active) return this.deactiveError()
+
     const user = { id: this.seq_id, name: '', like: 0, very_like: 0 }
     this.users.push(user)
     this.seq_id += 1
@@ -31,6 +41,8 @@ class FakeServer {
       .toPromise()
   }
   saveUsers (usersState) {
+    if (!this.active) return this.deactiveError()
+
     Object.assign(this.users, usersState)
     this._emitUpdate()
 
