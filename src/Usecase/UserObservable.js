@@ -52,18 +52,26 @@ getUsersObservable.subscribe(users => {
 })
 
 // ユーザーの追加リクエストを送信
+// flatMap()はObservable以外にもPromise()などを引数に取れる
+// なのでfromPromise()は不要で、Promiseの段階でcatchによるエラーハンドリングをしてしまえば本流のObservableがエラーになることはないので、ここまで省略することが可能
 export const addUserObservable = Rx.Observable.fromEvent(dispatcher, 'add_user')
   .do(() => {
     notificationStore.setInfo('loading...')
   })
   .flatMap(() => {
-    return Rx.Observable.fromPromise(client.addUser())
+    return client.addUser()
+      .then((newUser) => newUser)
+      .catch((err) => err )
   })
   .share()
 
-addUserObservable.subscribe((userState) => {
-    usersStore.addUser(userState)
+addUserObservable.subscribe((payload) => {
+  if (payload instanceof Error) {
+    notificationStore.setError(payload.message)
+  } else {
+    usersStore.addUser(payload)
     notificationStore.setSuccess('add user finish!')
+  }
   })
 
 // ローカルの状態をサーバーに同期
