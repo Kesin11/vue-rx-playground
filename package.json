@@ -37,9 +37,10 @@
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
   },
-	"ava": {
-		"babel": {
-			"presets": ["@ava/stage-4"]
-		}
-	}
+  "ava": {
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  }
 }
