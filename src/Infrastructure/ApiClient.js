@@ -1,6 +1,6 @@
 // 外部APIとの通信
 // ここではfakeServerに対しての疑似通信を行う
-import fakeServer from '../fake_server'
+import fakeServer from '../FakeServer'
 
 export default class ApiClient {
   constructor() {

@@ -8,7 +8,7 @@
 
 <script>
 // このコンポーネントはサーバー状態をデバッグ的に見るだけなのでApiClientは使わずに直接FakeServerを使う
-import fakeServer from '../fake_server'
+import fakeServer from '../FakeServer'
 import dispatcher from '../dispatcher'
 
 export default {

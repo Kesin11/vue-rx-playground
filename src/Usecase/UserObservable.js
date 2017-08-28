@@ -1,6 +1,8 @@
 // Userに関するusecase
 // FluxではActionに相当する
 
+// TODO: インスタンス化できないとテストするためにモックしなきゃいけなかったりするので、跡で直す
+
 import Rx from 'rxjs/Rx'
 import dispatcher from '../dispatcher'
 import ApiClient from '../Infrastructure/ApiClient'
