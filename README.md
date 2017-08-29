@@ -1,6 +1,6 @@
 # vue-rx-playground
 
-> Rx.js + Vue.js playground
+Rx.js + Vue.js with MVVM + LayerdArchitecture playground
 
 ## Build Setup
 
@@ -99,6 +99,7 @@ CleanArchitectureの思想に従い、DomainがInfrastructureに依存しない�
 
 # ディレクトリ構造メモ
 
+```
 Component/
   App.vue
 Usecase/
@@ -111,3 +112,4 @@ Model/
   Notification.js
 Infra/
   ApiClient.js
+```
