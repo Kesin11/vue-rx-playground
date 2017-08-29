@@ -13,6 +13,9 @@ npm run dev
 
 # build for production with minification
 npm run build
+
+# test
+npm test
 ```
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
@@ -26,7 +29,7 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [x] ユーザー追加には時間がかかり、その間追加中の文言がでる
 - [x] Storeへの分離
 - [x] Domainの分離
-- [ ] サーバーとの疑似通信
+- [x] サーバーとの疑似通信
   - [x] Infrastructureの分離
   - [x] ローカル状態のリセットができる
   - [x] ローカル状態をサーバーに保存する
@@ -34,7 +37,7 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
   - [x] Store/Notificationの作成
   - [x] 保存に成功したらメッセージを出す
   - [x] 失敗したときのエラーメッセージ
-- [ ] Observableのテスト
+- [x] Observableのテスト
 
 # 設計
 MVVM + Layerd Architecture
@@ -68,11 +71,6 @@ StoreはDomainのオブジェクトを持ち、Domainオブジェクトが更新
 
 今回はRx.jsの練習も兼ねているのでUsecaseはobservableで構成する
 
-TODO: LayerdArchitectureはモデルを3層に分けるものだったので、その趣旨から言えばStoreではなくて最もViewModelに近いUsecaseのみがStoreに更新があったことを伝えるべきでは？
-Modelを操作することができるのはUsecaseだけなので、どのModelを更新したか知ってるはずだし。
-と思ったけど、自分より下の層のどのメソッドを呼んだらそれが更新されたかどうか知ってるというのは、下の層の実装を知ってることになるのでダメか？
-ちゃんと考えがまとまっていないのでまたあとで考える
-
 - UserObservable
 
 ### Store
@@ -80,6 +78,8 @@ Domainの集約と、Domainが変更されたことをViewに通知する。
 アプリ全体のstate = Storeが持つModelから生成されるプレーンなjsオブジェクト
 という構造になる。
 ViewModelのdataの1つのキーと1対1で対応するStoreができるはず
+
+- UsersStore
 
 ## Domain
 いわゆるドメインモデル。あるオブジェクトに関する振る舞いや状態の更新を担当する。
