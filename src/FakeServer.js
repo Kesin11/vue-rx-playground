@@ -3,9 +3,13 @@ import dispatcher from './dispatcher'
 
 class FakeServer {
   constructor(initUsers) {
-    this.users = initUsers
-    this.seq_id = initUsers.length + 1
+    this.init(initUsers)
+  }
+  init(initUsers) {
+    this.users = Object.assign([], initUsers)
+    this.seq_id = this.users.length + 1
     this.active = true
+
   }
   _emitUpdate() {
     dispatcher.emit('UPDATE_SERVER_STATE')
