@@ -20,3 +20,8 @@ new Promise(resolve => {
 
 setTimeout(() => emitter.emit('click'),  50)
 setTimeout(() => emitter.emit('click'), 100)
+
+// 実行結果
+//
+// promise click
+// observable click
