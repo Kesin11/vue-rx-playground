@@ -11,6 +11,7 @@
     "test": "ava"
   },
   "dependencies": {
+    "axios": "0.16.2",
     "event-emitter": "^0.3.5",
     "rxjs": "5.4.2",
     "underscore": "1.8.3",
