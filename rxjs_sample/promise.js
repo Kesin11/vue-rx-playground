@@ -1,8 +1,4 @@
 const Rx = require('rxjs/Rx')
-const _ = require('underscore')
-const Emitter = require('event-emitter')
-
-const emitter = new Emitter()
 
 // resolved promise
 const promise = Rx.Observable.of(1)
@@ -14,17 +10,11 @@ const rejectedPromise = Rx.Observable
   .throw(new Error('rejected promise'))
   .toPromise()
 
-promise.then(() => {
-  console.log('promise then')
-})
+promise.then(() => { console.log('promise then') })
 
 rejectedPromise
-  .then(() => {
-    console.log('this message will be never show')
-  })
-  .catch((error) => {
-    console.log(error)
-  })
+  .then(() => { console.log('this message will be never show') })
+  .catch((error) => { console.log(error) })
 
 // 実行結果
 //
